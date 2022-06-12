@@ -3,6 +3,7 @@ import numpy as np
 import scipy as scr
 from scipy import fft as FFT
 from scipy import integrate as integr
+import cmath
 import warnings
 
 
@@ -16,9 +17,10 @@ def print_vector(name):
         i = i+1
     print(x)
 
+
 def ploter():
     # suppress warnings
-    #warnings.filterwarnings('ignore')
+    # warnings.filterwarnings('ignore')
     N = 1000
     a = 0.
     b = 1 / 200
@@ -40,37 +42,57 @@ def ploter():
 
 
 def hank():
-    N = 1000
+    N = 100
     a1 = -0.00005
     b1 = 0.00005
     b2 = a1
     h = (b1 - a1)/N
     a = 0.
-    b = 1 / 200
+    foc = 300
+    b = 1/(2*foc)
     c = 5.
     alpha = 2*np.pi
-    z = 100.
+    z = 100
+    hz = (700 - 100)/100
     k = 10000.
     wl = 0.0005
+
     list1 = []
     x = np.linspace(a1, b1, num=N)
+    zed = np.linspace(100, 1000, num=N)
+    rad = 5.
     r_axis = x*np.cos(alpha)
-    x2 = lambda r: np.exp(1j*(((-2*np.pi/wl * b * r*np.cos(alpha)) ** 2) + (2*np.pi/wl * c * r*np.cos(alpha))))*(1j*2*np.pi/(wl*z))*np.exp(1j*2*np.pi/wl*z)*np.exp(1j*2*np.pi/wl*(r**2)/(2*z))*r
+    # x2 = lambda rad: np.exp(1j*(((-2*np.pi/wl * b * rad*np.cos(alpha)) ** 2) + (2*np.pi/wl * c * rad*np.cos(alpha))))*(1j*2*np.pi/(wl*z))*np.exp(1j*2*np.pi/wl*z)*np.exp(1j*2*np.pi/wl*(rad**2)/(2*z))*rad
     x3 = lambda x: np.cos(x)
-    while(b2 < b1):
-        f, err = integr.quad(x2, b2, b2+h)
-        list1.append(np.abs(f))
-        b2 = b2 + h
-    list2 = x2(x)
+    x4 = lambda r: np.exp(1j*(((-2*np.pi/wl * b * r*np.cos(alpha)) ** 2) + (2*np.pi/wl * c * r*np.cos(alpha))))
+    while(z < 700):
+        '''
+        x2 = lambda rad: np.exp(
+            1j * (((-2 * np.pi / wl * b * rad * np.cos(alpha)) ** 2) + (2 * np.pi / wl * c * rad * np.cos(alpha)))) * np.exp(
+            1j * 2 * np.pi / wl * (rad ** 2) / (2 * z)) * rad * (
+                                     1j * 2 * np.pi / (wl * z)) * np.exp(1j * 2 * np.pi / wl * z)
+        '''
+        x2 = lambda rad: np.sin(rad+z)/(rad + z)
+        #while(b2 < b1):
+        f, err = integr.quad(x2, 1, np.inf)
+        list1.append(f)
+            #b2 = b2 + h
+        z = z + hz
+    list2 = x4(x)
     print(len(list1))
-    plt.plot(x, np.abs(list1))
+    plt.subplot(121)
+    plt.plot(x, np.abs(list2))
+    plt.grid()
+    plt.subplot(122)
+    res = np.abs(list1)
+    plt.plot(zed, res)
     plt.grid()
     plt.show()
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    #print_vector('PyCharm')
+    # print_vector('PyCharm')
     hank()
 
 
