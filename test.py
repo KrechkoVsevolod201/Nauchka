@@ -13,20 +13,22 @@ def hank():
     b1 = 0.00005
     foc = 100
     b = 1/(2*foc)
-    c = 0.
-    z = 70.
-    hz = (130 - 70.)/70
+    c = 1.
+    z = 50.
+    hz = (500 - 50.)/500
     #print(hz)
     k = 10000.
     #wl = 0.0005
 
     list1 = []
     x = np.linspace(a1, b1, num=N)
-    zed = np.linspace(70., 130, num=70)
+    zed = np.linspace(50., 500, num=501)
     x4 = lambda r: np.exp(1j * k * r * ((-b) * r + c))
-    while(z < 130):
+    #x4 = lambda r: np.sinc((-k*r*r*b + k*r*c))
+    while(z < 500):
         x2 = lambda r: (1j*k/z)*np.exp(1j*k*z)*np.exp(1j * k * r * ((-b) * r + c))*np.exp(1j*k*r*r/(2*z))*r
-        f, err = integr.quad(x2, 1, np.inf)
+        #x2 = lambda r: (1j * k / z) * np.exp(1j * k * z) * np.sinc((-k*r*r*b + k*r*c)) * np.exp(1j * k * r * r / (2 * z)) * r
+        f, err = integr.quad(x2, 0., 1)
         list1.append(f)
         z = z + hz
     list2 = x4(x)
