@@ -11,22 +11,20 @@ def hank():
     N = 100
     a1 = 0.
     b1 = 0.00005
-    a = 0.
-    foc = 100
+    foc = 300
     b = 1/(2*foc)
-    c = 0.00025
-    alpha = 2*np.pi
-    z = 70
-    hz = (130 - 70)/500
-    print(hz)
+    c = 10.
+    z = 0.1
+    hz = (550 - 0.1)/70
+    #print(hz)
     k = 10000.
-    wl = 0.0005
+    #wl = 0.0005
 
     list1 = []
     x = np.linspace(a1, b1, num=N)
-    zed = np.linspace(70, 130, num=500)
+    zed = np.linspace(0.1, 550, num=71)
     x4 = lambda r: np.exp(1j * k * r * ((-b) * r + c))
-    while(z < 130):
+    while(z < 550):
         x2 = lambda r: (1j*k/z)*np.exp(1j*k*z)*np.exp(1j * k * r * ((-b) * r + c))*np.exp(1j*k*r*r/(2*z))*r
         f, err = integr.quad(x2, 1, np.inf)
         list1.append(f)
@@ -35,12 +33,12 @@ def hank():
     print(len(list1))
     plt.subplot(131)
     plt.plot(x, np.angle(list2))
-    plt.title("Входное поле")
+    plt.title("Фаза входного поля")
     plt.grid()
     plt.subplot(132)
     res = np.abs(list1)
     res2 = np.fft.fftshift(res)
-    plt.plot(zed, res)
+    plt.plot(zed, res2)
     plt.title("Амплитуда преобразования")
     plt.grid()
     plt.subplot(133)
